@@ -9,18 +9,27 @@ urlPrefix =
     "http://elm-in-action.com/"
 
 
-view : a -> Html msg
+viewThumbnail : { url : String } -> Html msg
+viewThumbnail thumbnail =
+    img [ src (urlPrefix ++ thumbnail.url) ] []
+
+
+view : List { url : String } -> Html msg
 view model =
     div [ class "content" ]
         [ h1 [] [ text "Photo Groove" ]
-        , div [ id "thumbnails" ]
-            [ img [ src (urlPrefix ++ "1.jpeg") ] []
-            , img [ src (urlPrefix ++ "3.jpeg") ] []
-            , img [ src (urlPrefix ++ "3.jpeg") ] []
-            ]
+        , div [ id "thumbnails" ] (List.map viewThumbnail model)
         ]
+
+
+initialModel : List { url : String }
+initialModel =
+    [ { url = "1.jpeg" }
+    , { url = "2.jpeg" }
+    , { url = "3.jpeg" }
+    ]
 
 
 main : Html msg
 main =
-    view "no model yet"
+    view initialModel

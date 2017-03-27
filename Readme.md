@@ -51,6 +51,8 @@ See [gulp-elm](https://www.npmjs.com/package/gulp-elm) and [sample elm gulpfile]
 
 ## Live Reload
 
+`gulp serve` then open `http://localhost:3001`
+
 [livereload with gulp](https://scotch.io/tutorials/a-quick-guide-to-using-livereload-with-gulp)
 
 Install [livereload Chrome extension](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei/related?hl=en)
