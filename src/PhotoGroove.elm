@@ -21,11 +21,11 @@ urlPrefix =
     "http://elm-in-action.com/"
 
 
-viewThumbnail : String -> Photo -> Html Msg
+viewThumbnail : Maybe String -> Photo -> Html Msg
 viewThumbnail selectedUrl thumbnail =
     img
         [ src (urlPrefix ++ thumbnail.url)
-        , classList [ ( "selected", selectedUrl == thumbnail.url ) ]
+        , classList [ ( "selected", selectedUrl == Just thumbnail.url ) ]
         , onClick (SelectByUrl thumbnail.url)
         ]
         []
@@ -67,21 +67,28 @@ view model =
         , h3 [] [ text "Thumbnail size" ]
         , div [ id "choose-size" ]
             (List.map viewSizeChooser [ Small, Medium, Large ])
-        , div [ id "thumbnails" ]
+        , div [ id "thumbnails", class (sizeToString model.chosenSize) ]
             (List.map (viewThumbnail model.selectedUrl)
                 model.photos
             )
-        , img
-            [ class (sizeToString model.chosenSize)
-            , src (urlPrefix ++ "large/" ++ model.selectedUrl)
-            ]
-            []
+        , viewLarge model.selectedUrl
         ]
+
+
+viewLarge : Maybe String -> Html Msg
+viewLarge maybeUrl =
+    case maybeUrl of
+        Nothing ->
+            text ""
+
+        Just url ->
+            img [ src (urlPrefix ++ "large/" ++ url) ] []
 
 
 type alias Model =
     { photos : List Photo
-    , selectedUrl : String
+    , selectedUrl : Maybe String
+    , loadingError : Maybe String
     , chosenSize : ThumbnailSize
     }
 
@@ -93,7 +100,8 @@ initialModel =
         , { url = "2.jpeg" }
         , { url = "3.jpeg" }
         ]
-    , selectedUrl = "1.jpeg"
+    , loadingError = Nothing
+    , selectedUrl = Nothing
     , chosenSize = Large
     }
 
@@ -104,14 +112,14 @@ type ThumbnailSize
     | Large
 
 
-getPhotoUrl : Int -> String
+getPhotoUrl : Int -> Maybe String
 getPhotoUrl index =
     case Array.get index photoArray of
         Just photo ->
-            photo.url
+            Just photo.url
 
         Nothing ->
-            ""
+            Nothing
 
 
 type Msg
@@ -128,17 +136,13 @@ update msg model =
             ( { model | selectedUrl = getPhotoUrl index }, Cmd.none )
 
         SelectByUrl url ->
-            ( { model | selectedUrl = url }, Cmd.none )
+            ( { model | selectedUrl = Just url }, Cmd.none )
 
         SurpriseMe ->
             ( model, Random.generate SelectByIndex randomPhotoPicker )
 
         SetSize size ->
             ( { model | chosenSize = size }, Cmd.none )
-
-
-
--- main : Program Never Model Msg
 
 
 main : Program Never Model Msg
