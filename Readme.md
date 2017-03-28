@@ -51,7 +51,10 @@ See [gulp-elm](https://www.npmjs.com/package/gulp-elm) and [sample elm gulpfile]
 
 ## Live Reload
 
-`gulp serve` then open `http://localhost:3001`
+`gulp watch` in one process
+`gulp serve` another process
+
+Then open `http://localhost:3001` to see reult :)
 
 [livereload with gulp](https://scotch.io/tutorials/a-quick-guide-to-using-livereload-with-gulp)
 
