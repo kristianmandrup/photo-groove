@@ -5,6 +5,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Array exposing (..)
 import Random exposing (..)
+import Http
 
 
 type alias Photo =
@@ -80,6 +81,19 @@ viewLarge maybeUrl =
             img [ src (urlPrefix ++ "large/" ++ url) ] []
 
 
+viewOrError : Model -> Html Msg
+viewOrError model =
+    case model.loadingError of
+        Nothing ->
+            view model
+
+        Just errorMessage ->
+            div [ class "error-message" ]
+                [ h1 [] [ text "Photo Groove" ]
+                , p [] [ text errorMessage ]
+                ]
+
+
 type alias Model =
     { photos : List Photo
     , selectedUrl : Maybe String
@@ -122,6 +136,14 @@ type Msg
     | SelectByIndex Int
     | SurpriseMe
     | SetSize ThumbnailSize
+    | LoadPhotos (Result Http.Error String)
+
+
+initialCmd : Cmd Msg
+initialCmd =
+    "http://elm-in-action.com/photos/list"
+        |> Http.getString
+        |> Http.send LoadPhotos
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -152,12 +174,30 @@ update msg model =
         SetSize size ->
             ( { model | chosenSize = size }, Cmd.none )
 
+        LoadPhotos (Ok responseStr) ->
+            let
+                urls =
+                    String.split "," responseStr
+
+                photos =
+                    List.map Photo urls
+            in
+                ( { model
+                    | photos = photos
+                    , selectedUrl = List.head urls
+                  }
+                , Cmd.none
+                )
+
+        LoadPhotos (Err _) ->
+            ( { model | loadingError = Just "Error!" }, Cmd.none )
+
 
 main : Program Never Model Msg
 main =
     Html.program
-        { init = ( initialModel, Cmd.none )
-        , view = view
+        { init = ( initialModel, initialCmd )
+        , view = viewOrError
         , update = update
         , subscriptions = \_ -> Sub.none
         }
