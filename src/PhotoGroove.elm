@@ -11,14 +11,11 @@ urlPrefix =
 
 viewThumbnail : String -> { a | url : String } -> Html msg
 viewThumbnail selectedUrl thumbnail =
-    if selectedUrl == thumbnail.url then
-        img
-            [ src (urlPrefix ++ thumbnail.url)
-            , class "selected"
-            ]
-            []
-    else
-        img [ src (urlPrefix ++ thumbnail.url) ] []
+    img
+        [ src (urlPrefix ++ thumbnail.url)
+        , classList [ ( "selected", selectedUrl == thumbnail.url ) ]
+        ]
+        []
 
 
 view : { photos : List { url : String }, selectedUrl : String } -> Html msg
@@ -29,6 +26,11 @@ view model =
             (List.map (\photo -> viewThumbnail model.selectedUrl photo)
                 model.photos
             )
+        , img
+            [ class "large"
+            , src (urlPrefix ++ "large/" ++ model.selectedUrl)
+            ]
+            []
         ]
 
 
