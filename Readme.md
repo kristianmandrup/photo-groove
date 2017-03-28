@@ -31,7 +31,7 @@ em() {
 
 `ei`
 
-**specific package**
+#### specific package
 
 `ei [package]` such as `ei elm-lang/html`
 

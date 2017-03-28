@@ -2,18 +2,41 @@ module Main exposing (..)
 
 import Html exposing (Html, div, input, p, text)
 import Html.Attributes exposing (style, placeholder)
+import CardParser
+
+
+type alias Model =
+    String
+
+
+init : String -> Model
+init str =
+    str
+
+
+view model =
+    let
+        card =
+            spellCard model
+    in
+        div
+            [ mainStyle ]
+            [ input
+                [ inputStyle
+                , placeholder "Type your card..."
+                ]
+                []
+            , p [ cardStyle ] [ text card ]
+            ]
 
 
 main : Html msg
 main =
-    div [ mainStyle ]
-        [ input
-            [ inputStyle
-            , placeholder "Type your card..."
-            ]
-            []
-        , p [ cardStyle ] [ text "Seven of Club" ]
-        ]
+    Html.beginnerProgram
+        { model = init ""
+        , view = view
+        , update = update
+        }
 
 
 mainStyle : Html.Attribute msg

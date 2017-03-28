@@ -9,25 +9,38 @@ urlPrefix =
     "http://elm-in-action.com/"
 
 
-viewThumbnail : { url : String } -> Html msg
-viewThumbnail thumbnail =
-    img [ src (urlPrefix ++ thumbnail.url) ] []
+viewThumbnail : String -> { a | url : String } -> Html msg
+viewThumbnail selectedUrl thumbnail =
+    if selectedUrl == thumbnail.url then
+        img
+            [ src (urlPrefix ++ thumbnail.url)
+            , class "selected"
+            ]
+            []
+    else
+        img [ src (urlPrefix ++ thumbnail.url) ] []
 
 
-view : List { url : String } -> Html msg
+view : { photos : List { url : String }, selectedUrl : String } -> Html msg
 view model =
     div [ class "content" ]
         [ h1 [] [ text "Photo Groove" ]
-        , div [ id "thumbnails" ] (List.map viewThumbnail model)
+        , div [ id "thumbnails" ]
+            (List.map (\photo -> viewThumbnail model.selectedUrl photo)
+                model.photos
+            )
         ]
 
 
-initialModel : List { url : String }
+initialModel : { photos : List { url : String }, selectedUrl : String }
 initialModel =
-    [ { url = "1.jpeg" }
-    , { url = "2.jpeg" }
-    , { url = "3.jpeg" }
-    ]
+    { photos =
+        [ { url = "1.jpeg" }
+        , { url = "2.jpeg" }
+        , { url = "3.jpeg" }
+        ]
+    , selectedUrl = "1.jpeg"
+    }
 
 
 main : Html msg
