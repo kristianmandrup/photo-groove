@@ -20,11 +20,11 @@ urlPrefix =
     "http://elm-in-action.com/"
 
 
-type alias Operation =
+type alias Msg =
     { data : String, operation : String }
 
 
-viewThumbnail : String -> { a | url : String } -> Html Operation
+viewThumbnail : String -> Photo -> Html Msg
 viewThumbnail selectedUrl thumbnail =
     img
         [ src (urlPrefix ++ thumbnail.url)
@@ -34,7 +34,7 @@ viewThumbnail selectedUrl thumbnail =
         []
 
 
-view : Model -> Html Operation
+view : Model -> Html Msg
 view model =
     div [ class "content" ]
         [ h1 [] [ text "Photo Groove" ]
@@ -65,10 +65,7 @@ initialModel =
     }
 
 
-update :
-    { b | data : a, operation : String }
-    -> { c | selectedUrl : a }
-    -> { c | selectedUrl : a }
+update : Msg -> Model -> Model
 update msg model =
     if msg.operation == "SELECT_PHOTO" then
         { model | selectedUrl = msg.data }
@@ -76,7 +73,7 @@ update msg model =
         model
 
 
-main : Program Never Model Operation
+main : Program Never Model Msg
 main =
     Html.beginnerProgram
         { model = initialModel
