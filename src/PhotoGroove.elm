@@ -3,6 +3,16 @@ module PhotoGroove exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Array exposing (..)
+
+
+type alias Photo =
+    { url : String }
+
+
+photoArray : Array Photo
+photoArray =
+    Array.fromList initialModel.photos
 
 
 urlPrefix : String
@@ -10,7 +20,11 @@ urlPrefix =
     "http://elm-in-action.com/"
 
 
-viewThumbnail : String -> { a | url : String } -> Html { data : String, operation : String }
+type alias Operation =
+    { data : String, operation : String }
+
+
+viewThumbnail : String -> { a | url : String } -> Html Operation
 viewThumbnail selectedUrl thumbnail =
     img
         [ src (urlPrefix ++ thumbnail.url)
@@ -20,7 +34,7 @@ viewThumbnail selectedUrl thumbnail =
         []
 
 
-view : { photos : List { url : String }, selectedUrl : String } -> Html { data : String, operation : String }
+view : Model -> Html Operation
 view model =
     div [ class "content" ]
         [ h1 [] [ text "Photo Groove" ]
@@ -36,7 +50,11 @@ view model =
         ]
 
 
-initialModel : { photos : List { url : String }, selectedUrl : String }
+type alias Model =
+    { photos : List Photo, selectedUrl : String }
+
+
+initialModel : Model
 initialModel =
     { photos =
         [ { url = "1.jpeg" }
@@ -58,7 +76,7 @@ update msg model =
         model
 
 
-main : Program Never { photos : List { url : String }, selectedUrl : String } { data : String, operation : String }
+main : Program Never Model Operation
 main =
     Html.beginnerProgram
         { model = initialModel
