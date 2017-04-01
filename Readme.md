@@ -1,5 +1,7 @@
 # Elm in Action (learning project)
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/kristianmandrup/photo-groove.svg)](https://greenkeeper.io/)
+
 Project for learning Elm with the book [Elm in Action](https://www.manning.com/books/elm-in-action)
 
 Also see [rtfeldman repo](https://github.com/rtfeldman/elm-in-action)
